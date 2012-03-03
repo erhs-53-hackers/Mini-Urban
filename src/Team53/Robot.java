@@ -169,7 +169,7 @@ public class Robot {
 	}
         public void park(int parkingSpotDistance, int parkingSide, boolean flag)
         {            
-            if (parkingSide == 1)
+           /* if (parkingSide == 1)
             {
                if(LcolorSensor.getRGBComponent(ColorSensorHT.BLUE) > 60 & 
                        LcolorSensor.getRGBComponent(ColorSensorHT.BLUE) < 80)
@@ -188,17 +188,22 @@ public class Robot {
             {
                 if(LcolorSensor.getRGBComponent(ColorSensorHT.BLUE) > 60 & 
                        LcolorSensor.getRGBComponent(ColorSensorHT.BLUE) < 80)
-                {
+                { 
+                * 
+                */
                      pilot.travel(parkingSpotDistance);
                      turnRight();
                      pilot.travel(parkingSpotLength);
-                     flag = true;
+                     flag = false;
+             /*       
                 }
                 else
                 {
                     hugRight();
                 }
             }
+            * 
+            */
         }
         public void getOutOfpark(int parkingSide)
         {

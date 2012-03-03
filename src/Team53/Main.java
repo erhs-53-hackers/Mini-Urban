@@ -34,12 +34,12 @@ public class Main {
                     //robot.checkColor(robot.RcolorSensor);
                     
 			//robot.hugRight();
-                    //boolean flag = false; 
-                    //while(!flag || !Button.ESCAPE.isPressed())
-                    //{
-                     //   robot.park(4, 0, flag);
-                    //}
-                    System.out.println(robot.RcolorSensor.getRGBComponent(ColorSensorHT.BLUE));
+                    boolean flag = true; 
+                    while(flag || !Button.ESCAPE.isPressed())
+                    {
+                       robot.park(20, 0, flag);
+                    }
+                    //System.out.println(robot.RcolorSensor.getRGBComponent(ColorSensorHT.BLUE));
 
                     
 		
