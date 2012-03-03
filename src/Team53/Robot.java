@@ -7,6 +7,7 @@ import lejos.nxt.SensorPort;
 import lejos.nxt.addon.ColorSensorHT;
 import lejos.robotics.navigation.DifferentialPilot;
 import lejos.util.PIDController;
+import lejos.robotics.Color;
 
 public class Robot {
 	LightSensor lightSensor;
@@ -50,45 +51,6 @@ public class Robot {
 		pilot.setTravelSpeed(25);
 		pilot.setRotateSpeed(30);
 	}
-
-	private Team53.Color getColor(ColorSensorHT sensor) {
-
-		Team53.Color c = null;
-		int result = 0;
-		for (int i = 0; i < 50; i++) {
-			result += sensor.getColorID();
-		}
-		result /= 50;
-		System.out.println(result);
-
-		switch (sensor.getColorID()) {
-		case 6:
-			c = Team53.Color.White;
-			break;
-		case 3:
-			c = Team53.Color.Yellow;
-			break;
-		case 5:
-			c = Team53.Color.Red;
-			break;
-		case 0:
-			c = Team53.Color.Red;
-			break;
-		case 2:
-			c = Team53.Color.Blue;
-			break;
-		case 8:
-			c = Team53.Color.Black;
-			break;
-		case 1:
-			c = Team53.Color.Green;
-			break;
-
-		}
-
-		return c;
-	}
-
 	public void turnLeft() {
 		pilot.rotate(-90);		
 	}
@@ -146,6 +108,30 @@ public class Robot {
 		
 	}
 	
+        private String getColor(ColorSensorHT xcolor) 
+        {
+            int[] xcolorInput = {xcolor.getRGBComponent(Color.RED), xcolor.getRGBComponent(Color.GREEN), xcolor.getRGBComponent(Color.BLUE)};
+            int colorAvgValue = (xcolorInput[0] + xcolorInput[1] + xcolorInput[2]) / 3;
+            int redVal = (xcolorInput[0] - colorAvgValue);
+            int greenVal = (xcolorInput[1] - colorAvgValue);
+            int blueVal = (xcolorInput[2] - colorAvgValue);
+            if (Math.abs(redVal) < 15 && Math.abs(greenVal) < 15 && Math.abs(blueVal) < 15) {
+                if (xcolorInput[0] <= 100 && xcolorInput[1] <= 100 && xcolorInput[2] <= 100) {
+                    return "black";
+                }
+            } else if (xcolorInput[0] > 100 && xcolorInput[1] > 100 && xcolorInput[2] > 100) {
+                return "white";
+            } else if (redVal > 15 && greenVal <= 0) { //Consideration of blue value unnessesary;
+                return "red";
+            } else if (redVal > 15 && greenVal > 15) { //Consideration of blue value unnessesary
+                return "yellow";
+            } else if (redVal <= 0 && greenVal <= 10 && blueVal > 15) {
+                return "blue";
+            } else if (redVal <= 0 && greenVal > 15) {
+                return "green";
+            }
+            return "???";
+    }
 
 	public void hugRight() {
 		checkColor(RcolorSensor);
