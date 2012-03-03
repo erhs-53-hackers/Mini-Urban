@@ -24,26 +24,34 @@ public class Main {
                 //robot.pilot.setTravelSpeed(100);
                 //robot.pilot.travel(50);
 
-		while (!Button.ESCAPE.isPressed()) {
+		
                    // robot.printColors();
 			//System.out.println("Black:"+robot.RcolorSensor.getRGBComponent(ColorSensorHT.BLACK));
 			//System.out.println("Yellow:"+robot.RcolorSensor.getRGBComponent(ColorSensorHT.YELLOW));
 			//robot.checkForStop(Direction.Right);
 
-                    //robot.hugLeft();
+                    robot.hugRight();
+                    robot.turnRight();
+                    robot.hugRight();
+                    robot.turnRight();
+                    robot.hugRight();
+                    robot.turnLeft();
+                    robot.hugLeft();
                     //robot.checkColor(robot.RcolorSensor);
                     
-			//robot.hugRight();
-                    boolean flag = true; 
+			//robot.hugRight
+                    /* 
                     while(flag || !Button.ESCAPE.isPressed())
                     {
                        robot.park(20, 0, flag);
                     }
+                    * */
+                    
                     //System.out.println(robot.RcolorSensor.getRGBComponent(ColorSensorHT.BLUE));
 
                     
 		
-		}
+		
 
 	}
 
