@@ -1,5 +1,6 @@
 package Team53;
 
+
 import lejos.nxt.LightSensor;
 import lejos.nxt.Motor;
 import lejos.nxt.SensorPort;
@@ -14,16 +15,21 @@ public class Robot {
 	PIDController pid;
 	DifferentialPilot pilot;
 	float speed = 400;
-	int targetRed, targetWhite, targetYellow, red, yellow, white, currentColor;
+	
 
 	public Robot() {
 		RcolorSensor = new ColorSensorHT(SensorPort.S1);
 		LcolorSensor = new ColorSensorHT(SensorPort.S2);
 		//lightSensor = new LightSensor(SensorPort.S1);
                 
-                //Thread.sleep(500);
+                
                 LcolorSensor.initBlackLevel();
                 RcolorSensor.initBlackLevel();
+        try {
+            Thread.sleep(5000);
+        } catch (InterruptedException ex) {
+            //Logger.getLogger(Robot.class.getName()).log(Level.SEVERE, null, ex);
+        }
 		
 	}
 
@@ -33,18 +39,8 @@ public class Robot {
 		pid.setPIDParam(PIDController.PID_KD, kd);
 		
 	}
-	public void calibrateTargetColors(int white, int red, int yellow) {
-		this.targetRed = red;
-		this.targetYellow = yellow;
-		this.targetWhite = white;
-	}
-	public void calibrateColors(int white, int red, int yellow) {
-		this.white = white;
-		this.red = red;
-		this.yellow = yellow;
-	}
-	public void setColor(int color) {
-		currentColor = color;
+	
+	public void setColor(int color) {		
 		pid = new PIDController(color);
 	}
 		
@@ -102,8 +98,8 @@ public class Robot {
 	public void printColors() {
 		//System.out.println("Yellow: " + RcolorSensor.getRGBComponent(ColorSensorHT.YELLOW));
 		//System.out.println("White: " + RcolorSensor.getRGBComponent(ColorSensorHT.WHITE));
-		System.out.println("L Black: " + LcolorSensor.getRGBComponent(ColorSensorHT.BLACK));
-                System.out.println("R Black: " + RcolorSensor.getRGBComponent(ColorSensorHT.BLACK));
+		System.out.println("R Black: " + RcolorSensor.getRGBComponent(ColorSensorHT.BLACK));
+                //System.out.println("R Black: " + RcolorSensor.getRGBComponent(ColorSensorHT.BLACK));
                 //System.out.println("Left Red: " + LcolorSensor.getRGBComponent(ColorSensorHT.RED));
                 //System.out.println("Left Green: " + LcolorSensor.getRGBComponent(ColorSensorHT.GREEN));
                 //System.out.println("Left Blue: " + LcolorSensor.getRGBNormalized(ColorSensorHT.BLUE));
@@ -139,14 +135,19 @@ public class Robot {
 		}
 	}
 	
-	private void checkColor() {
-		System.out.println("Yellow: " + RcolorSensor.getRGBComponent(ColorSensorHT.YELLOW));
-		System.out.println("White: " + RcolorSensor.getRGBComponent(ColorSensorHT.WHITE));
+	public void checkColor(ColorSensorHT sensor) {
+            if(sensor.getRGBComponent(ColorSensorHT.WHITE) == 255) {
+                speed = 400;
+            } else {
+                speed = 200;
+            }
+            System.out.println("sensor:" + sensor.getRGBComponent(ColorSensorHT.BLACK));
+		
 	}
 	
 
 	public void hugRight() {
-		checkColor();
+		checkColor(RcolorSensor);
 		
 		float value = pid.doPID(RcolorSensor.getRGBComponent(ColorSensorHT.BLACK));		
 		
@@ -155,13 +156,17 @@ public class Robot {
 		Motor.B.setSpeed(speed - (speed * (value/128/5)));
 		Motor.B.forward();
 		Motor.C.setSpeed(speed + (speed * (value/128/5)));
-		Motor.C.forward();	
+		Motor.C.forward();
+                
+                
+                
 		
 		//checkForStop(Direction.Left);
 		
 		
 	}
 	public void hugLeft() {
+            checkColor(LcolorSensor);
 	    float value = pid.doPID(LcolorSensor.getRGBComponent(ColorSensorHT.BLACK));		
 		
 		//System.out.println(value);

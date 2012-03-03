@@ -12,23 +12,25 @@ public class Main {
 	public static void main(String[] args) {
 		Robot robot = new Robot();
 		robot.calibratePilot(2.4f, 6.8f);
-		robot.calibrateTargetColors(140, 0, 84);
-		robot.calibrateColors(255, 0, 45);
-		robot.setColor(robot.targetWhite);
-		robot.calibratePID(1f, 0.005f, 0.2f);
+		
+		robot.setColor(103);
+		robot.calibratePID(1f, 0.005f, 0.2f);//L 101, R 116
 		
 		//robot.pilot.setTravelSpeed(20);
 		
 		//LightSensor l = new LightSensor(SensorPort.S4);
 		//l.setFloodlight(true);
 		//Motor.A.setSpeed(1);
+                //robot.pilot.setTravelSpeed(100);
+                //robot.pilot.travel(50);
 
 		while (!Button.ESCAPE.isPressed()) {
-                    robot.printColors();
+                   // robot.printColors();
 			//System.out.println("Black:"+robot.RcolorSensor.getRGBComponent(ColorSensorHT.BLACK));
 			//System.out.println("Yellow:"+robot.RcolorSensor.getRGBComponent(ColorSensorHT.YELLOW));
 			//robot.checkForStop(Direction.Right);
-			//robot.hugRight();
+                    robot.hugLeft();
+                    //robot.checkColor(robot.RcolorSensor);
                     
                     
 		
