@@ -30,6 +30,7 @@ public class Main {
 			//System.out.println("Yellow:"+robot.RcolorSensor.getRGBComponent(ColorSensorHT.YELLOW));
 			//robot.checkForStop(Direction.Right);
 
+
                     robot.hugRight();
                     robot.turnRight();
                     robot.hugRight();
@@ -46,6 +47,7 @@ public class Main {
                        robot.park(20, 0, flag);
                     }
                     * */
+
                     
                     //System.out.println(robot.RcolorSensor.getRGBComponent(ColorSensorHT.BLUE));
 

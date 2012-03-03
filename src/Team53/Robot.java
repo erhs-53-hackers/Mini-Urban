@@ -134,7 +134,9 @@ public class Robot {
         if (Math.abs(redVal) < 15 && Math.abs(greenVal) < 15 && Math.abs(blueVal) < 15) {
             if (xcolorInput[0] <= 100 && xcolorInput[1] <= 100 && xcolorInput[2] <= 100) {
                 return "black";
-            }
+
+		
+	}            
         } else if (xcolorInput[0] > 100 && xcolorInput[1] > 100 && xcolorInput[2] > 100) {
             return "white";
         } else if (redVal > 15 && greenVal <= 0) { //Consideration of blue value unnessesary;
@@ -186,6 +188,7 @@ public class Robot {
         while (!checkForStop(RcolorSensor)) {
             checkColor(LcolorSensor);
 
+
             float value = pid.doPID(LcolorSensor.getRGBComponent(ColorSensorHT.BLACK));
 
             //System.out.println(value);
@@ -195,6 +198,7 @@ public class Robot {
             Motor.B.forward();
             Motor.C.setSpeed(speed - (speed * (value / 128 / 5)));
             Motor.C.forward();
+
         }
 
         //checkForStop(Direction.Right);
