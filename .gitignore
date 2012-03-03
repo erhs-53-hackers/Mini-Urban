@@ -4,4 +4,5 @@
 *.metadata
 *.sym
 *.nblh~
+/build/
 
