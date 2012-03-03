@@ -30,15 +30,13 @@ public class Main {
 			//System.out.println("Yellow:"+robot.RcolorSensor.getRGBComponent(ColorSensorHT.YELLOW));
 			//robot.checkForStop(Direction.Right);
 
-                    //robot.hugLeft();
+                    robot.hugLeft();
                     //robot.checkColor(robot.RcolorSensor);
                     
-			//robot.hugRight();
-                    boolean flag = true; 
-                    while(flag || !Button.ESCAPE.isPressed())
-                    {
-                       robot.park(20, 0, flag);
-                    }
+			//robot.hugRight()
+                    if(robot.getColor(robot.RcolorSensor).equals("blue")) robot.park(2,true);
+                    if(robot.getColor(robot.LcolorSensor).equals("blue")) robot.park(2,false);
+                    
                     //System.out.println(robot.RcolorSensor.getRGBComponent(ColorSensorHT.BLUE));
 
                     

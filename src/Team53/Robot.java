@@ -108,7 +108,7 @@ public class Robot {
 		
 	}
 	
-        private String getColor(ColorSensorHT xcolor) 
+        public String getColor(ColorSensorHT xcolor) 
         {
             int[] xcolorInput = {xcolor.getRGBComponent(Color.RED), xcolor.getRGBComponent(Color.GREEN), xcolor.getRGBComponent(Color.BLUE)};
             int colorAvgValue = (xcolorInput[0] + xcolorInput[1] + xcolorInput[2]) / 3;
@@ -167,43 +167,18 @@ public class Robot {
 		
 		
 	}
-        public void park(int parkingSpotDistance, int parkingSide, boolean flag)
-        {            
-           /* if (parkingSide == 1)
-            {
-               if(LcolorSensor.getRGBComponent(ColorSensorHT.BLUE) > 60 & 
-                       LcolorSensor.getRGBComponent(ColorSensorHT.BLUE) < 80)
-               {
-                   pilot.travel(parkingSpotDistance);
-                   turnLeft();
-                   pilot.travel(parkingSpotLength);
-                   flag = true;
-               }
-               else
-               {
-                   hugLeft();
-               }
+        public void park(int spotNum, boolean parkingSideR)
+        {
+            pilot.travel(17 * spotNum);
+            if (parkingSideR) {
+                turnRight();
+            } else {
+                turnLeft();
             }
-            else if (parkingSide == 0)
-            {
-                if(LcolorSensor.getRGBComponent(ColorSensorHT.BLUE) > 60 & 
-                       LcolorSensor.getRGBComponent(ColorSensorHT.BLUE) < 80)
-                { 
-                * 
-                */
-                     pilot.travel(parkingSpotDistance);
-                     turnRight();
-                     pilot.travel(parkingSpotLength);
-                     flag = false;
-             /*       
-                }
-                else
-                {
-                    hugRight();
-                }
+            pilot.travel(parkingSpotLength);
+            if (getColor(RcolorSensor).equals("white") || getColor(LcolorSensor).equals("white")) {
+                pilot.stop();
             }
-            * 
-            */
         }
         public void getOutOfpark(int parkingSide)
         {
