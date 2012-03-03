@@ -15,6 +15,7 @@ public class Robot {
 	PIDController pid;
 	DifferentialPilot pilot;
 	float speed = 400;
+        int parkingSpotLength = 22;
 	
 
 	public Robot() {
@@ -180,4 +181,49 @@ public class Robot {
 		
 		
 	}
+        public void park(int parkingSpotDistance, int parkingSide, boolean flag)
+        {            
+            if (parkingSide == 1)
+            {
+               if(LcolorSensor.getRGBComponent(ColorSensorHT.BLUE) > 60 & 
+                       LcolorSensor.getRGBComponent(ColorSensorHT.BLUE) < 80)
+               {
+                   pilot.travel(parkingSpotDistance);
+                   turnLeft();
+                   pilot.travel(parkingSpotLength);
+                   flag = true;
+               }
+               else
+               {
+                   hugLeft();
+               }
+            }
+            else if (parkingSide == 0)
+            {
+                if(LcolorSensor.getRGBComponent(ColorSensorHT.BLUE) > 60 & 
+                       LcolorSensor.getRGBComponent(ColorSensorHT.BLUE) < 80)
+                {
+                     pilot.travel(parkingSpotDistance);
+                     turnRight();
+                     pilot.travel(parkingSpotLength);
+                     flag = true;
+                }
+                else
+                {
+                    hugRight();
+                }
+            }
+        }
+        public void getOutOfpark(int parkingSide)
+        {
+            pilot.travel(-parkingSpotLength);
+            if (parkingSide == 1)
+            {
+                turnRight();
+            }
+            else if (parkingSide == 0)
+            {
+                turnLeft();
+            }
+        }
 }
