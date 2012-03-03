@@ -29,7 +29,11 @@ public class Main {
 			//System.out.println("Yellow:"+robot.RcolorSensor.getRGBComponent(ColorSensorHT.YELLOW));
 			//robot.checkForStop(Direction.Right);
 			//robot.hugRight();
-                    
+                    boolean flag = false; 
+                    while(flag)
+                    {
+                        robot.park(4, 0, flag);
+                    }
                     
 		
 		}
