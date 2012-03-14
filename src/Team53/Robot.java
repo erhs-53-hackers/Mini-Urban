@@ -1,5 +1,7 @@
 package Team53;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import lejos.nxt.Button;
 import lejos.nxt.LightSensor;
 import lejos.nxt.Motor;
@@ -16,7 +18,7 @@ public class Robot {
     ColorSensorHT LcolorSensor;
     PIDController pid;
     DifferentialPilot pilot;
-    float speed = 400;
+    float speed = 600;
     int parkingSpotLength = 22;
     int lastValue = 0, target;
     float P, I, D;
@@ -63,8 +65,8 @@ public class Robot {
         System.out.println("Turning...");
         pilot.travel(5);
         pilot.setTravelSpeed(2);
-        Motor.B.setSpeed(200);
-        Motor.C.setSpeed(25);
+        Motor.B.setSpeed(500);
+        Motor.C.setSpeed(100);
         Motor.B.forward();
         Motor.C.forward();
         while (!"white".equals(getColor(LcolorSensor))) {
@@ -79,8 +81,8 @@ public class Robot {
         System.out.println("Turning...");
         pilot.travel(5);
         pilot.setTravelSpeed(2);
-        Motor.B.setSpeed(25);
-        Motor.C.setSpeed(200);
+        Motor.B.setSpeed(100);
+        Motor.C.setSpeed(500);
         Motor.B.forward();
         Motor.C.forward();
 
@@ -114,6 +116,10 @@ public class Robot {
         return false;
 
     }
+    
+    public void checkTachoCount(){
+        System.out.println(Motor.B.getTachoCount());
+    }
 
     public void checkColor(ColorSensorHT sensor) {
         if (sensor.getRGBComponent(ColorSensorHT.WHITE) == 255) {
@@ -135,8 +141,8 @@ public class Robot {
             if (xcolorInput[0] <= 100 && xcolorInput[1] <= 100 && xcolorInput[2] <= 100) {
                 return "black";
 
-		
-	}            
+
+            }
         } else if (xcolorInput[0] > 100 && xcolorInput[1] > 100 && xcolorInput[2] > 100) {
             return "white";
         } else if (redVal > 15 && greenVal <= 0) { //Consideration of blue value unnessesary;
@@ -174,6 +180,13 @@ public class Robot {
 
 
 
+        try {
+            Thread.sleep(5000);
+
+            //checkForStop(Direction.Right);
+        } catch (InterruptedException ex) {
+            Logger.getLogger(Robot.class.getName()).log(Level.SEVERE, null, ex);
+        }
 
         //checkForStop(Direction.Left);
 
@@ -200,8 +213,13 @@ public class Robot {
             Motor.C.forward();
 
         }
+        try {
+            Thread.sleep(5000);
 
-        //checkForStop(Direction.Right);
+            //checkForStop(Direction.Right);
+        } catch (InterruptedException ex) {
+            Logger.getLogger(Robot.class.getName()).log(Level.SEVERE, null, ex);
+        }
 
 
     }

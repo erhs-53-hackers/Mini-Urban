@@ -38,6 +38,7 @@ public class Main {
                     robot.hugRight();
                     robot.turnLeft();
                     robot.hugLeft();
+                    robot.checkTachoCount();
                     //robot.checkColor(robot.RcolorSensor);
                     
 			//robot.hugRight
