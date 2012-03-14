@@ -178,22 +178,36 @@ public class Robot {
         }
         return "???";
     }
-
-    public void hugRight() {
-        resetPID(target);
-        while (!checkForStop(LcolorSensor)) {
-            checkColor(RcolorSensor);
-
-
-            float value = pid.doPID(RcolorSensor.getRGBComponent(ColorSensorHT.BLACK));
-
-            //System.out.println(value);
-            System.out.println("Following...");
+    
+    public void adjustPath(Direction dir) {
+        if(dir == Direction.Right) {
+            float value = pid.doPID(RcolorSensor.getRGBComponent(ColorSensorHT.BLACK));        
 
             Motor.B.setSpeed(speed - (speed * (value / 128 / 5)));
             Motor.B.forward();
             Motor.C.setSpeed(speed + (speed * (value / 128 / 5)));
             Motor.C.forward();
+        } else {            
+            float value = pid.doPID(LcolorSensor.getRGBComponent(ColorSensorHT.BLACK));            
+
+            Motor.B.setSpeed(speed + (speed * (value / 128 / 5)));
+            Motor.B.forward();
+            Motor.C.setSpeed(speed - (speed * (value / 128 / 5)));
+            Motor.C.forward();
+        }
+        
+    }
+
+    public void hugRight() {
+        resetPID(target);
+        while (!checkForStop(LcolorSensor)) {
+            checkColor(RcolorSensor)
+            
+            adjustPath(Direction.Right);
+            
+            System.out.println("Following...");
+
+            
         }
         pilot.stop();
 
@@ -216,17 +230,12 @@ public class Robot {
         resetPID(target);
         while (!checkForStop(RcolorSensor)) {
             checkColor(LcolorSensor);
-
-
-            float value = pid.doPID(LcolorSensor.getRGBComponent(ColorSensorHT.BLACK));
-
-            //System.out.println(value);
+            
+            adjustPath(Direction.Left);
+           
             System.out.println("Following...");
 
-            Motor.B.setSpeed(speed + (speed * (value / 128 / 5)));
-            Motor.B.forward();
-            Motor.C.setSpeed(speed - (speed * (value / 128 / 5)));
-            Motor.C.forward();
+           
 
         }
         pilot.stop();
