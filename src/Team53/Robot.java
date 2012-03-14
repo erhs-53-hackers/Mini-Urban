@@ -1,5 +1,7 @@
 package Team53;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import lejos.nxt.Button;
 import lejos.nxt.LightSensor;
 import lejos.nxt.Motor;
@@ -16,9 +18,10 @@ public class Robot {
     ColorSensorHT LcolorSensor;
     PIDController pid;
     DifferentialPilot pilot;
-    float speed = 400;
+    
     final int parkingSpotLength = 22;
     final int parkingSpotDistance = 22;
+    float speed = 600;
     int lastValue = 0, target;
     float P, I, D;
 
@@ -48,6 +51,14 @@ public class Robot {
 
     }
 
+    private void resetPID(int color) {
+        target = color;
+        pid = new PIDController(color);
+        pid.setPIDParam(PIDController.PID_KP, P);
+        pid.setPIDParam(PIDController.PID_KI, I);
+        pid.setPIDParam(PIDController.PID_KD, D);
+    }
+
     public void setColor(int color) {
         target = color;
         pid = new PIDController(color);
@@ -64,14 +75,7 @@ public class Robot {
         System.out.println("Turning...");
         pilot.travel(5);
         pilot.setTravelSpeed(2);
-        Motor.B.setSpeed(200);
-        Motor.C.setSpeed(25);
-        Motor.B.forward();
-        Motor.C.forward();
-        while (!"white".equals(getColor(LcolorSensor))) {
-            System.out.println(getColor(LcolorSensor));
-        }
-        pilot.stop();
+        findLine(Direction.Left);
 
         pilot.setTravelSpeed(25);
     }
@@ -80,15 +84,7 @@ public class Robot {
         System.out.println("Turning...");
         pilot.travel(5);
         pilot.setTravelSpeed(2);
-        Motor.B.setSpeed(25);
-        Motor.C.setSpeed(200);
-        Motor.B.forward();
-        Motor.C.forward();
-
-        while ("black".equals(getColor(RcolorSensor))) {
-            System.out.println(getColor(RcolorSensor));
-        }
-        pilot.stop();
+        findLine(Direction.Right);
 
         pilot.setTravelSpeed(25);
     }
@@ -116,6 +112,10 @@ public class Robot {
 
     }
 
+    public void checkTachoCount() {
+        System.out.println(Motor.B.getTachoCount());
+    }
+
     public void checkColor(ColorSensorHT sensor) {
         if (sensor.getRGBComponent(ColorSensorHT.WHITE) == 255) {
             speed = 400;
@@ -124,6 +124,33 @@ public class Robot {
         }
         //System.out.println("sensor:" + sensor.getRGBComponent(ColorSensorHT.BLACK));
 
+    }
+
+    public void goStrait() {
+        pilot.travel(Values.streetWidth);
+    }
+
+    public void findLine(Direction dir) {
+        if (dir == Direction.Left) {
+            Motor.B.setSpeed(500);
+            Motor.C.setSpeed(100);
+            Motor.B.forward();
+            Motor.C.forward();
+            while (!"white".equals(getColor(LcolorSensor))) {
+                System.out.println(getColor(LcolorSensor));
+            }
+            pilot.stop();
+        } else {
+            Motor.B.setSpeed(100);
+            Motor.C.setSpeed(500);
+            Motor.B.forward();
+            Motor.C.forward();
+
+            while ("black".equals(getColor(RcolorSensor))) {
+                System.out.println(getColor(RcolorSensor));
+            }
+            pilot.stop();
+        }
     }
 
     private String getColor(ColorSensorHT xcolor) {
@@ -153,10 +180,7 @@ public class Robot {
     }
 
     public void hugRight() {
-        pid = new PIDController(target);
-        pid.setPIDParam(PIDController.PID_KP, P);
-        pid.setPIDParam(PIDController.PID_KI, I);
-        pid.setPIDParam(PIDController.PID_KD, D);
+        resetPID(target);
         while (!checkForStop(LcolorSensor)) {
             checkColor(RcolorSensor);
 
@@ -175,6 +199,13 @@ public class Robot {
 
 
 
+        try {
+            Thread.sleep(5000);
+
+            //checkForStop(Direction.Right);
+        } catch (InterruptedException ex) {
+            Logger.getLogger(Robot.class.getName()).log(Level.SEVERE, null, ex);
+        }
 
         //checkForStop(Direction.Left);
 
@@ -182,10 +213,7 @@ public class Robot {
     }
 
     public void hugLeft() {
-        pid = new PIDController(target);
-        pid.setPIDParam(PIDController.PID_KP, P);
-        pid.setPIDParam(PIDController.PID_KI, I);
-        pid.setPIDParam(PIDController.PID_KD, D);
+        resetPID(target);
         while (!checkForStop(RcolorSensor)) {
             checkColor(LcolorSensor);
 
@@ -201,8 +229,14 @@ public class Robot {
             Motor.C.forward();
 
         }
+        pilot.stop();
+        try {
+            Thread.sleep(5000);
 
-        //checkForStop(Direction.Right);
+            //checkForStop(Direction.Right);
+        } catch (InterruptedException ex) {
+            Logger.getLogger(Robot.class.getName()).log(Level.SEVERE, null, ex);
+        }
 
 
     }
