@@ -1,6 +1,8 @@
 1) blue line following following/switching
 2) parking
-3) go strait (after stopping)
-4) find line (so you can follow it; should be slow)
+3*) go strait (after stopping)
+4*) find line (so you can follow it; should be slow)
 5) set final speeds
 6) creat calibration program
+
+* = written but needs testing
