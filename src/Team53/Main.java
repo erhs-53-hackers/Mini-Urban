@@ -28,7 +28,7 @@ public class Main {
         robot.hugRight();
         robot.turnLeft();
         robot.hugLeft();
-        robot.park(3, 0, false);
+        robot.park(3, Direction.Right);
         
     }
 }

@@ -253,16 +253,13 @@ public class Robot {
     }
 
     public void park(int spotNum, Direction dir) {
-      ColorSensorHT primary, secondary;
+      ColorSensorHT primary = LcolorSensor, secondary = RcolorSensor;
       if(dir == Direction.Right) {
           primary = RcolorSensor;
           secondary = LcolorSensor;
-      } else {
-          primary = LcolorSensor;
-          secondary = LcolorSensor;
       }
       resetPID(target);
-      while (checkColor(primary) != "blue") {
+      while (getColor(primary) != "blue") {
           adjustPath(dir);
       }
       resetPID(Values.blueTarget);
@@ -273,7 +270,7 @@ public class Robot {
       pilot.travel(2);
       findLine(dir);
       resetPID(Values.whiteTarget);
-      while (checkColor(secondary) == "black") {
+      while (getColor(secondary) == "black") {
           adjustPath(dir);
       }
       
