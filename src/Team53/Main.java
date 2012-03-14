@@ -31,13 +31,14 @@ public class Main {
 			//robot.checkForStop(Direction.Right);
 
 
-                    robot.hugRight();
-                    robot.turnRight();
-                    robot.hugRight();
-                    robot.turnRight();
-                    robot.hugRight();
-                    robot.turnLeft();
-                    robot.hugLeft();
+                    //robot.hugRight();
+                    //robot.turnRight();
+                    //robot.hugRight();
+                    //robot.turnRight();
+                    //robot.hugRight();
+                    //robot.turnLeft();
+                    //robot.hugLeft();
+                    robot.park(3, 0, false);
                     //robot.checkColor(robot.RcolorSensor);
                     
 			//robot.hugRight

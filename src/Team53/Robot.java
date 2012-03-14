@@ -17,7 +17,8 @@ public class Robot {
     PIDController pid;
     DifferentialPilot pilot;
     float speed = 400;
-    int parkingSpotLength = 22;
+    final int parkingSpotLength = 22;
+    final int parkingSpotDistance = 22;
     int lastValue = 0, target;
     float P, I, D;
 
@@ -135,8 +136,8 @@ public class Robot {
             if (xcolorInput[0] <= 100 && xcolorInput[1] <= 100 && xcolorInput[2] <= 100) {
                 return "black";
 
-		
-	}            
+
+            }
         } else if (xcolorInput[0] > 100 && xcolorInput[1] > 100 && xcolorInput[2] > 100) {
             return "white";
         } else if (redVal > 15 && greenVal <= 0) { //Consideration of blue value unnessesary;
@@ -207,27 +208,60 @@ public class Robot {
     }
 
     public void park(int spotNum, int parkingSide, boolean flag) {
-        /*
-         * if (parkingSide == 1) {
-         * if(LcolorSensor.getRGBComponent(ColorSensorHT.BLUE) > 60 &
-         * LcolorSensor.getRGBComponent(ColorSensorHT.BLUE) < 80) {
-         * pilot.travel(parkingSpotDistance); turnLeft();
-         * pilot.travel(parkingSpotLength); flag = true; } else { hugLeft(); } }
-         * else if (parkingSide == 0) {
-         * if(LcolorSensor.getRGBComponent(ColorSensorHT.BLUE) > 60 &
-         * LcolorSensor.getRGBComponent(ColorSensorHT.BLUE) < 80) {
-         *
+        /*if (parkingSide == 1) {
+            if (LcolorSensor.getRGBComponent(ColorSensorHT.BLUE) > 60 & LcolorSensor.getRGBComponent(ColorSensorHT.BLUE) < 80) {
+                pilot.travel(parkingSpotDistance);
+                turnLeft();
+                pilot.travel(parkingSpotLength);
+                flag = true;
+            } 
+            else {
+                        while (!checkForStop(RcolorSensor)) {
+                checkColor(LcolorSensor);
+                float value = pid.doPID(LcolorSensor.getRGBComponent(ColorSensorHT.BLUE));
+                //System.out.println(value);
+                System.out.println("Following...");
+
+                Motor.B.setSpeed(speed + (speed * (value / 128 / 5)));
+                Motor.B.forward();
+                Motor.C.setSpeed(speed - (speed * (value / 128 / 5)));
+                Motor.C.forward();
+            
+        }
+
+            }
+        }   
+        else if (parkingSide == 0) {
+              if (LcolorSensor.getRGBComponent(ColorSensorHT.BLUE) > 60 & LcolorSensor.getRGBComponent(ColorSensorHT.BLUE) < 80) {
+                pilot.travel(17 * spotNum);
+                turnRight();
+                pilot.travel(parkingSpotLength);
+                flag = false;
+                } else { 
+                  hugRight(); 
+                } 
+       }
+         * 
          */
-        pilot.travel(17 * spotNum);
-        turnRight();
-        pilot.travel(parkingSpotLength);
-        flag = false;
-        /*
-         * }
-         * else { hugRight(); } }
-         *
-         */
-    }
+      while (Motor.B.getTachoCount() == 7.2*360*spotNum) {
+            checkColor(RcolorSensor);
+
+
+            float value = pid.doPID(LcolorSensor.getRGBComponent(ColorSensorHT.BLUE));
+
+            //System.out.println(value);
+            System.out.println("Following...");
+
+            Motor.B.setSpeed(speed + (speed * (value / 128 / 5)));
+            Motor.B.forward();
+            Motor.C.setSpeed(speed - (speed * (value / 128 / 5)));
+            Motor.C.forward();
+
+        }
+
+  }
+  
+    
 
     public void getOutOfpark(int parkingSide) {
         pilot.travel(-parkingSpotLength);
