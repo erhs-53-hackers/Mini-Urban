@@ -25,22 +25,22 @@ public class Main {
         //    System.out.println(Motor.B.getTachoCount());
         //}
         
-        //robot.hugRight();
-        //robot.turnRight();
-        //robot.hugRight();
-        //robot.turnRight();
-        //robot.hugRight();
-        //robot.turnLeft();
-        //robot.hugLeft();
-        robot.park(2, Direction.Right);
-        robot.getOutOfpark(Direction.Right);
+        robot.hugRight();
+        robot.turnRight();
+        robot.hugRight();
+        robot.turnRight();
+        robot.hugRight();
+        robot.turnLeft();
+        robot.hugLeft();
+        //robot.park(2, Direction.Right);
+        //robot.getOutOfpark(Direction.Right);
         //robot.hugRight();
         
         //
               
-        //while(true) {
-        //    System.out.println(robot.RcolorSensor.getRGBComponent(ColorSensorHT.BLACK));
-        //}
+       while(true) {
+           System.out.println(robot.RcolorSensor.getRGBComponent(ColorSensorHT.BLACK));
+       }
         
     }
 }
