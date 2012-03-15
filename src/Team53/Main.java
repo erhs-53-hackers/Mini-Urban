@@ -15,20 +15,32 @@ public class Main {
 
         robot.calibratePilot(3f, 13f);
 
-        robot.setColor(Values.whiteTarget);
-        robot.calibratePID(1f, 0.005f, 0.2f);//L 101, R 116
+        robot.setColor(Values.whiteTarget, Values.whiteMax);
+        robot.calibratePID(1f, 0.0025f, 0.05f);//L 101, R 116
 
         //done calibrating starting track
-        robot.checkTachoCount();
+        //robot.checkTachoCount();
+        //robot.pilot.forward();
+        //while(true) {
+        //    System.out.println(Motor.B.getTachoCount());
+        //}
         
-        robot.hugRight();
-        robot.turnRight();
-        robot.hugRight();
-        robot.turnRight();
-        robot.hugRight();
-        robot.turnLeft();
-        robot.hugLeft();
-        robot.park(3, Direction.Right);
+        //robot.hugRight();
+        //robot.turnRight();
+        //robot.hugRight();
+        //robot.turnRight();
+        //robot.hugRight();
+        //robot.turnLeft();
+        //robot.hugLeft();
+        robot.park(2, Direction.Right);
+        robot.getOutOfpark(Direction.Right);
+        //robot.hugRight();
+        
+        //
+              
+        //while(true) {
+        //    System.out.println(robot.RcolorSensor.getRGBComponent(ColorSensorHT.BLACK));
+        //}
         
     }
 }

@@ -1,7 +1,6 @@
 package Team53;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
 import lejos.nxt.Button;
 import lejos.nxt.LightSensor;
 import lejos.nxt.Motor;
@@ -18,9 +17,9 @@ public class Robot {
     ColorSensorHT LcolorSensor;
     PIDController pid;
     DifferentialPilot pilot;
-    
     final int parkingSpotLength = 22;
-    final int parkingSpotDistance = 22;
+    final int parkingSpotDistance = 17;
+    int max = 1;
     float speed = 600;
     int lastValue = 0, target;
     float P, I, D;
@@ -51,16 +50,18 @@ public class Robot {
 
     }
 
-    private void resetPID(int color) {
+    private void resetPID(int color, int max) {
         target = color;
+        this.max = max;
         pid = new PIDController(color);
         pid.setPIDParam(PIDController.PID_KP, P);
         pid.setPIDParam(PIDController.PID_KI, I);
         pid.setPIDParam(PIDController.PID_KD, D);
     }
 
-    public void setColor(int color) {
+    public void setColor(int color, int max) {
         target = color;
+        this.max = max;
         pid = new PIDController(color);
     }
 
@@ -117,10 +118,22 @@ public class Robot {
     }
 
     public void checkColor(ColorSensorHT sensor) {
-        if (sensor.getRGBComponent(ColorSensorHT.WHITE) == 255) {
+        if ("white".equals(getColor(sensor))) {
             speed = 400;
-        } else {
-            speed = 200;
+            if(target != Values.whiteTarget) {
+                resetPID(Values.whiteTarget, Values.whiteMax);
+                
+            }
+        } else if ("yellow".equals(getColor(sensor))) {
+            speed = 392;
+            if(target != Values.yellowTarget) {
+                resetPID(Values.yellowTarget, Values.yellowMax);
+            }
+        } else if ("blue".equals(getColor(sensor))) {
+            speed = 400;
+            if(target != Values.blueTarget) {
+                resetPID(Values.blueTarget, Values.blueMax);
+            }
         }
         //System.out.println("sensor:" + sensor.getRGBComponent(ColorSensorHT.BLACK));
 
@@ -178,50 +191,50 @@ public class Robot {
         }
         return "???";
     }
-    
-    public void adjustPath(Direction dir) {
-        if(dir == Direction.Right) {
-            checkColor(RcolorSensor);
-            float value = pid.doPID(RcolorSensor.getRGBComponent(ColorSensorHT.BLACK));        
 
-            Motor.B.setSpeed(speed - (speed * (value / 128 / 5)));
+    public void adjustPath(Direction dir) {
+        if (dir == Direction.Right) {
+            checkColor(RcolorSensor);
+            float value = pid.doPID(RcolorSensor.getRGBComponent(ColorSensorHT.BLACK));
+
+            Motor.B.setSpeed(speed - (speed * (value / max / 3)));
             Motor.B.forward();
-            Motor.C.setSpeed(speed + (speed * (value / 128 / 5)));
+            Motor.C.setSpeed(speed + (speed * (value / max / 3)));
             Motor.C.forward();
         } else {
             checkColor(LcolorSensor);
-            
-            float value = pid.doPID(LcolorSensor.getRGBComponent(ColorSensorHT.BLACK));            
 
-            Motor.B.setSpeed(speed + (speed * (value / 128 / 5)));
+            float value = pid.doPID(LcolorSensor.getRGBComponent(ColorSensorHT.BLACK));
+
+            Motor.B.setSpeed(speed + (speed * (value / max / 3)));
             Motor.B.forward();
-            Motor.C.setSpeed(speed - (speed * (value / 128 / 5)));
+            Motor.C.setSpeed(speed - (speed * (value / max / 3)));
             Motor.C.forward();
         }
-        
+
     }
 
     public void hugRight() {
-        resetPID(target);
+        resetPID(target, max);
         while (!checkForStop(LcolorSensor)) {
-            
-            
+
+
             adjustPath(Direction.Right);
-            
+
             System.out.println("Following...");
 
-            
+
         }
         pilot.stop();
 
 
 
         try {
-            Thread.sleep(5000);
+            Thread.sleep(1000);
 
             //checkForStop(Direction.Right);
         } catch (InterruptedException ex) {
-            Logger.getLogger(Robot.class.getName()).log(Level.SEVERE, null, ex);
+            //Logger.getLogger(Robot.class.getName()).log(Level.SEVERE, null, ex);
         }
 
         //checkForStop(Direction.Left);
@@ -230,62 +243,103 @@ public class Robot {
     }
 
     public void hugLeft() {
-        resetPID(target);
-        while (!checkForStop(RcolorSensor)) {            
-            
+        resetPID(target, max);
+        while (!checkForStop(RcolorSensor)) {
+
             adjustPath(Direction.Left);
-           
+
             System.out.println("Following...");
 
-           
+
 
         }
         pilot.stop();
         try {
-            Thread.sleep(5000);
+            Thread.sleep(1000);
 
             //checkForStop(Direction.Right);
         } catch (InterruptedException ex) {
-            Logger.getLogger(Robot.class.getName()).log(Level.SEVERE, null, ex);
+            //Logger.getLogger(Robot.class.getName()).log(Level.SEVERE, null, ex);
         }
 
 
     }
 
     public void park(int spotNum, Direction dir) {
-      ColorSensorHT primary = LcolorSensor, secondary = RcolorSensor;
-      if(dir == Direction.Right) {
-          primary = RcolorSensor;
-          secondary = LcolorSensor;
-      }
-      resetPID(target);
-      while (getColor(primary) != "blue") {
-          adjustPath(dir);
-      }
-      resetPID(Values.blueTarget);
-      while (Motor.B.getTachoCount() < 7.2*360*spotNum) {
-            adjustPath(dir);
-            System.out.println("Following...");
-      }
-      pilot.travel(2);
-      findLine(dir);
-      resetPID(Values.whiteTarget);
-      while (getColor(secondary) == "black") {
-          adjustPath(dir);
-      }
-      
-      System.out.println("Parked!");
-
-  }
-  
-    
-
-    public void getOutOfpark(int parkingSide) {
-        pilot.travel(-parkingSpotLength);
-        if (parkingSide == 1) {
-            turnRight();
-        } else if (parkingSide == 0) {
-            turnLeft();
+        ColorSensorHT primary = LcolorSensor, secondary = RcolorSensor;
+        if (dir == Direction.Right) {
+            primary = RcolorSensor;
+            secondary = LcolorSensor;
         }
+        resetPID(Values.whiteTarget, Values.whiteMax);
+        while (true) {
+            if ("blue".equals(getColor(primary))) {
+                break;
+            }
+            System.out.println("Following not blue...");
+            adjustPath(dir);
+        }
+        resetPID(Values.blueTarget, Values.blueMax);
+        Motor.B.resetTachoCount();
+        while (Motor.B.getTachoCount() < 680 * (spotNum - 1)) {
+            System.out.println("Following blue...");
+            //System.out.println(Motor.B.getTachoCount() + " needs " + 680 * (spotNum - 1));
+            adjustPath(dir);
+        }
+
+        pilot.setTravelSpeed(10);
+        pilot.setRotateSpeed(30);
+        pilot.travel(13);
+        if(dir == Direction.Right) {
+            pilot.rotate(-40);
+        } else {
+            pilot.rotate(40);
+        }
+        
+        findLine(dir);
+        resetPID(Values.whiteTarget, Values.whiteMax);
+        while (!"white".equals(getColor(secondary))) {
+            adjustPath(dir);
+            System.out.println("Parking...");
+        }
+
+        System.out.println("Parked!");
+        try {
+            pilot.stop();
+            Thread.sleep(5000);
+
+            //checkForStop(Direction.Right);
+        } catch (InterruptedException ex) {
+            //Logger.getLogger(Robot.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+    }
+
+    //slow 6m /min
+    //fast 10 m /min
+    public void getOutOfpark(Direction dir) {
+        ColorSensorHT primary = LcolorSensor, secondary = RcolorSensor;
+        if (dir == Direction.Right) {
+            primary = RcolorSensor;
+            secondary = LcolorSensor;
+        }
+        pilot.travel(-parkingSpotLength);
+        if (dir == Direction.Right) {
+            pilot.rotate(90);
+        } else if (dir == Direction.Left) {
+            pilot.rotate(-90);
+        }
+        resetPID(Values.blueTarget, Values.blueMax);
+        while (true) {
+            System.out.println("Color " + getColor(primary));
+            if("white".equals(getColor(primary)) || "yellow".equals(getColor(primary))) {
+                break;
+            }
+            adjustPath(dir);
+            
+            
+        }
+        System.out.println("I hate Lisp");
+        
     }
 }
